@@ -5,29 +5,35 @@ import Price from "./Price";
 import Rating from "./Rating";
 
 const Book = ({ book }) => {
-  const [img, setImg] = useState() //iniitally no img
+  //img = HTML element!
+  const [img, setImg] = useState() //iniitally no img~
+  //when img changes, whole component reenders
+  
+  const mountedRef = useRef(true) //whole componenent dont reender
 
-  const mountedRef = useRef(false) //whole componenent dont reender
-
-  useEffect(() => {
-    const image = new Image() //create dom element with js, when it loads, set the img
-    image.src = book.url
-    image.onload = () => {
+  //To get that element = document allow us to create new image!
+  useEffect(() => {           //as soon as the book component mounts, call the useEffect and~
+    const image = new Image() 
+    image.src = book.url      //create dom image element with js(not HTML)~
+    image.onload = () => {    //when it loads, attach onload function with that by setting the image~
       if (mountedRef.current) {
         setImg(image)
+        //getting called even when components are unmounted due to its callback nature
+        //only use when it is mounted by useRef
       }
     }
     return () => {
       //when the componenet unmounts
-      mountedRef.current = true
+      mountedRef.current = false
+      //.current to use it with UseRef
     }
   })
   // function imageLoaded() {
-  //   console.log("imageLoaded"); //to see how it works
+  //   console.log("imageLoaded"); //to see how skeleton works
   // }
   return (
     <div className="book">
-      {img ? (
+      {img ? ( //check if there is an img
         <>
           <Link to={`/books/${book.id}`}>
             <figure className="book__img--wrapper">
